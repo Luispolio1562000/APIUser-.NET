@@ -12,7 +12,7 @@ namespace APIDEMO_.Context
         /// </summary>
         
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> Roles { get; set; }
+        public DbSet<UserRole> UserRoles{ get; set; }
         public ApiAppContext(DbContextOptions<ApiAppContext> options) : base(options){ }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -21,7 +21,7 @@ namespace APIDEMO_.Context
 
             List<User> usersInitData = new List<User>();
             usersInitData.Add(new User { Name = "Luis", LastName = "Fernandez" });
-            usersInitData.Add(new User { Name = "Luis", LastName = "Fernandez" });
+            usersInitData.Add(new User { Name = "Gustavo", LastName = "Polio" });
             builder.Entity<User>().ToTable("User").HasData(usersInitData);
             builder.Entity<User>().HasKey(t => t.UserId);
 
@@ -37,9 +37,9 @@ namespace APIDEMO_.Context
             builder.Entity<UserRole>().HasData(userRoles);
 
 
-            ///
-            /// Relacion uno a uno
-            builder.Entity<UserRole>().HasOne<User>("User").WithOne("UserID");
+            /// Relacion uno a uno, cada userRole, tiene un elemento relacionado que es un USER, se especifica la propiedad.
+            /// 
+            builder.Entity<UserRole>().HasOne<User>("User");
 
 
         }

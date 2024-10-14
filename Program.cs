@@ -45,7 +45,9 @@ builder.Services.AddControllers(/*config =>
             .Build();
         config.Filters.Add(new AuthorizeFilter(policy));
     }*/
-    );
+    ).AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 
 /*var SecretKey = builder.Configuration.GetValue<string>("SecretKey") ;
