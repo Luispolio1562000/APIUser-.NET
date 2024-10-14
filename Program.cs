@@ -75,12 +75,15 @@ builder.Services.AddAuthentication(options =>
 
 
 
+// builder.Services.AddDbContext<ApiAppContext>(options =>
+// {
+//     options.UseInMemoryDatabase("AppDB");
+// });
+
 builder.Services.AddDbContext<ApiAppContext>(options =>
 {
-    options.UseInMemoryDatabase("AppDB");
+    options.UseSqlServer(@"Data Source=qrsof-8645232\qrsof;Initial Catalog=APIDemo;Integrated Security=SSPI;");
 });
-
-
 
 builder.Services.AddResponseCaching();
 
