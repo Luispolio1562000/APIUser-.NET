@@ -80,6 +80,10 @@ builder.Services.AddDbContext<ApiAppContext>(options =>
     options.UseInMemoryDatabase("AppDB");
 });
 
+
+
+builder.Services.AddResponseCaching();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -103,6 +107,9 @@ if (app.Environment.IsDevelopment())
 //     Usa middlewares para interceptar los request y dependiendo de su programación el usuario podrá usar o no la API.
 
 /// Se puede pasar la politica y agregar al controlador que se requiere aplicar.
+
+
+app.UseResponseCaching();
 
 app.UseCors();
 

@@ -29,6 +29,7 @@ namespace APIDEMO_.Controllers
         
     
         [HttpGet]
+        [ResponseCache(Duration = 60)]
         [Route("getvalues")]
         public ActionResult<IEnumerable<User>> Get()
         {
