@@ -7,8 +7,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using APIDEMO_.Context;
+using APIDEMO_.Models;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
+
+
+static IEdmModel GetEdmModel()
+{
+    ODataConventionModelBuilder builder = new();
+    builder.EntitySet<User>("Users");
+    return builder.GetEdmModel();
+}
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -45,9 +58,19 @@ builder.Services.AddControllers(/*config =>
             .Build();
         config.Filters.Add(new AuthorizeFilter(policy));
     }*/
-    ).AddNewtonsoftJson(options =>
+    ).AddOData(options => options
+     
+    .AddRouteComponents("odata", GetEdmModel())
+    .Select()
+    .Filter()
+    .OrderBy()
+    .SetMaxTop(20)
+    .Count()
+    .Expand()
+            )
+    .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
+    );
 
 
 /*var SecretKey = builder.Configuration.GetValue<string>("SecretKey") ;
@@ -80,16 +103,19 @@ builder.Services.AddAuthentication(options =>
 //     options.UseInMemoryDatabase("AppDB");
 // });
 
-builder.Services.AddDbContext<ApiAppContext>(options =>
-{
-    options.UseSqlServer(@"Data Source=qrsof-8645232\qrsof;Initial Catalog=APIDemo;Integrated Security=SSPI;");
-});
+
 
 builder.Services.AddResponseCaching();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddDbContext<ApiAppContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("connection_sql")) );
+
+
+
 
 var app = builder.Build();
 
@@ -115,6 +141,9 @@ if (app.Environment.IsDevelopment())
 app.UseResponseCaching();
 
 app.UseCors();
+
+
+
 
 
 ///app.UseAuthentication();

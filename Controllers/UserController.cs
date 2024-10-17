@@ -4,6 +4,7 @@ using APIDEMO_.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -36,8 +37,26 @@ namespace APIDEMO_.Controllers
             return apiContext.Users;
         }
 
+
+        [HttpGet]
+        [ResponseCache(Duration = 60)]
+        [Route("getvalueswithodata")]
+        [EnableQuery(PageSize = 3)]
+        public IQueryable<User> GetUsersByOData()
+        {
+            return apiContext.Users;
+        }
+
+
+
+
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
+        ///Respuestas swagger
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> Get(string id)
         {
             Guid.TryParse(id, out var userId);
